@@ -1,23 +1,6 @@
 # prompt
-export PS1="\[\033[32m\][${debian_chroot:+($debian_chroot)}\[\033[33m\]\u@\h \[\033[1;34m\]\w\[\033[32m\]]\[\033[31m\]\$git_branch\$(set_spacing)\[\033[1;34m\][\t]
+export PS1="\[\033[32m\][${debian_chroot:+($debian_chroot)}\[\033[33m\]\u@\h \[\033[1;34m\]\w\[\033[32m\]]\[\033[31m\]\$git_branch\[\033[1;34m\][\t]
 \[\033[00;33m\]\$ "
-function set_spacing() {
-  local debian_chroot= ${debian_chroot:+($debian_chroot)}
-  local user=$USER
-  local hostname=${HOSTNAME%%.*}
-  local git_branch=$git_branch
-  local dir=${PWD/$HOME}
-  local time=`date +%H:%M:%S`
-  local termwidth
-  (( termwidth = ${COLUMNS} - ${#debian_chroot} - ${#user} - ${#hostname} - ${#git_branch}
-  - ${#dir} - ${#time} - 7))
-  local spacing=""
-  for i in $(seq 1 $termwidth); do
-      spacing="${spacing} "
-  done
-
-  echo "${spacing}"
-}
 
 
 export PATH=/usr/local/opt/curl/bin:$PATH
@@ -66,4 +49,15 @@ find_git_branch() {
     export git_branch=""
   fi
 }
+
+# Auto start ssh-agent
+SSH_AGENT_PID=`pgrep -U $USER -o 'ssh-agent'`
+if [ -z $SSH_AGENT_PID ]; then
+    eval $(ssh-agent -s)
+    ssh-add
+else
+    SSH_AGENT_SOCK=`find /tmp -user $USER -path '*ssh*' -type s -iname 'agent.'$(($SSH_AGENT_PID-1)) 2>/dev/null`
+    export SSH_AGENT_PID="$SSH_AGENT_PID"
+    export SSH_AUTH_SOCK="$SSH_AGENT_SOCK"
+fi
 

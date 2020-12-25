@@ -16,11 +16,14 @@ Plugin 'vim-airline/vim-airline-themes'
 Plugin 'tpope/vim-sleuth'  " Auto detect indentation with space or tab
 Plugin 'docunext/closetag.vim'  " auto close html tag
 Plugin 'ap/vim-css-color'
+Plugin 'maxmellon/vim-jsx-pretty'
 Plugin 'tpope/vim-fugitive'
 Plugin 'jeffkreeftmeijer/vim-numbertoggle'
+Plugin 'nathanaelkane/vim-indent-guides'
+Plugin 'dart-lang/dart-vim-plugin'
     autocmd FileType html,htmldjango let b:closetag_html_style=1
     autocmd FileType html,xhtml,xml,htmldjango source ~/.vim/bundle/closetag.vim/plugin/closetag.vim
-
+    let g:ale_echo_msg_format = '%linter% says %s'
     let g:ale_fixers = {
           \ 'python': ['autopep8'],
           \ }
@@ -34,6 +37,7 @@ Plugin 'digitaltoad/vim-pug'  " pug
 " All of your Plugins must be added before the following line
 call vundle#end()            " required
 filetype plugin indent on    " required
+set cindent
 " To ignore plugin indent changes, instead use:
 "filetype plugin on
 "
@@ -59,6 +63,8 @@ colorscheme gruvbox
 let g:gruvbox_undercurl=0
 let g:gruvbox_underline=0
 let g:airline_theme="gruvbox"
+let g:syntastic_pug_checkers = ['pug_lint']
+let g:syntastic_javascript_checkers = ['eslint']
 
 " indent guides
 let g:indent_guides_enable_on_vim_startup = 1
@@ -94,11 +100,13 @@ endif
 
 " Highlight the occurance of current word, use following command to select color
 " :so $VIMRUNTIME/syntax/hitest.vim
-autocmd CursorMoved * exe printf('match Underlined /\V\<%s\>/', escape(expand('<cword>'), '/\'))
+" autocmd CursorMoved * exe printf('match Underlined /\V\<%s\>/', escape(expand('<cword>'), '/\'))
 
 " Remove extra trailling spaces
 autocmd BufWritePre * :%s/\s\+$//e
 
+" turn on pug linter
+let g:syntastic_pug_checkers = ['pug_lint']
 " tabs
 set expandtab
 set ttyfast
@@ -106,4 +114,5 @@ set softtabstop=2
 set tabstop=2
 set shiftwidth=2
 set number relativenumber
+" map to clipboard
 set clipboard=unnamed
